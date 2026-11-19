@@ -56,6 +56,23 @@ Collects execution and error information.
 
 Sends automated email notifications to help with troubleshooting.
 
+## Workflow Screenshots
+
+### 1. Lead Registration
+![Lead Registration](screenshots/01-lead-registration.png)
+
+### 2. Lead Status Management
+![Lead Status Management](screenshots/02-lead-status-management.png)
+
+### 3. Lead Follow-up & Reporting
+![Lead Follow-up](screenshots/03-lead-follow-up-reporting.png)
+
+### 4. CRM Error Notifications
+![Error Notifications](screenshots/04-error-notifications.png)
+
+### 5. Weekly CRM Report
+![Weekly CRM Report](screenshots/weekly-crm-report.png)
+
 Technologies Used
 
 n8n – Workflow automation
