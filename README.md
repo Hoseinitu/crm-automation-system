@@ -1,134 +1,187 @@
 CRM Automation System
 
-An automated Customer Relationship Management (CRM) system built with n8n to manage leads, track sales activities, automate follow-ups, generate reports, and monitor workflow errors.
+An automated Customer Relationship Management (CRM) system built with n8n to manage leads, track customer interactions, automate follow-ups, generate reports, and monitor workflow errors.
 
 Project Overview
 
-This project demonstrates how business processes can be automated using low-code tools and workflow automation.
+This project demonstrates how business processes can be automated using workflow automation, conditional logic, data management, and email notifications.
 
-The system consists of four independent workflows that work together to simplify lead management and improve operational efficiency.
+The system consists of four independent but complementary workflows that cover the main stages of lead management.
+
+System Architecture
+
+The CRM system contains four main workflows:
+
+Lead Registration – Collects, validates, scores, and assigns new leads.
+
+Lead Status Management – Updates and tracks lead statuses.
+
+Lead Follow-up & Reporting – Automates follow-up reminders and generates weekly reports.
+
+CRM Error Notifications – Captures workflow errors and sends notification emails.
 
 Workflows
 
 1. Lead Registration
 
+Automates the process of registering new leads.
+
+Main features:
+
 Collects lead information through a form.
 
-Validates submitted data.
+Validates required fields and input data.
 
-Checks for duplicate leads.
+Checks for duplicate email addresses before registration.
 
-Calculates lead scores and assigns priorities.
+Calculates a lead score based on submitted information.
 
-Automatically assigns leads to sales representatives.
+Assigns a priority level to each lead.
 
-Stores new leads in the CRM database.
+Assigns leads to the appropriate team member.
 
-Sends email notifications.
+Saves new leads in the CRM Data Table.
+
+Sends email notifications after successful registration.
+
+Lead scoring criteria:
+
+FieldScoreFull Name10Email20Phone20Company30Source20 
+
+Priority levels:
+
+High: 70–100
+
+Medium: 40–69
+
+Low: Below 40
 
 2. Lead Status Management
 
-Allows users to update lead statuses.
+Allows users to update the status of existing leads.
 
-Searches for leads using their email addresses.
+Main features:
 
-Checks whether the requested status has changed.
+Searches for leads using their email address.
 
-Updates lead records and handles missing leads.
+Checks whether the lead exists.
+
+Compares the current status with the requested status.
+
+Prevents unnecessary updates when the status has not changed.
+
+Updates the CRM Data Table when a new status is selected.
+
+Returns appropriate responses for successful updates or missing leads.
+
+Available statuses:
+
+New
+
+Contacted
+
+Interested
+
+Not Interested
+
+Converted
 
 3. Lead Follow-up & Reporting
 
-Automatically checks leads that require follow-up.
+Automates customer follow-ups and generates periodic CRM reports.
 
-Prevents duplicate follow-up reminders.
+Daily follow-up automation:
+
+Runs automatically every day at 9:00 AM.
+
+Identifies leads with a valid follow-up date.
+
+Checks whether the follow-up date is due.
+
+Searches FollowUp History to prevent duplicate reminders on the same day.
 
 Sends reminder emails.
 
-Generates weekly CRM reports.
+Records completed follow-up notifications.
 
-Provides statistics about lead priorities and statuses.
+Weekly reporting automation:
+
+Runs every Monday at 9:00 AM.
+
+Retrieves lead records.
+
+Calculates total leads.
+
+Summarizes leads by priority.
+
+Summarizes leads by status.
+
+Sends a weekly CRM report through email.
 
 4. CRM Error Notifications
 
-Captures errors from connected workflows.
+Provides centralized error monitoring for the CRM workflows.
 
-Collects execution and error information.
+Main features:
 
-Sends automated email notifications to help with troubleshooting.
+Captures workflow execution errors.
 
-## Workflow Screenshots
+Identifies the workflow where the error occurred.
 
-### 1. Lead Registration
-![Lead Registration](screenshots/01-lead-registration.png)
+Collects execution information.
 
-### 2. Lead Status Management
-![Lead Status Management](screenshots/02-lead-status-management.png)
+Includes the last executed node and error message.
 
-### 3. Lead Follow-up & Reporting
-![Lead Follow-up](screenshots/03-lead-follow-up-reporting.png)
+Provides the execution URL for troubleshooting.
 
-### 4. CRM Error Notifications
-![Error Notifications](screenshots/04-error-notifications.png)
+Sends an automatic error notification email.
 
-### 5. Weekly CRM Report
-![Weekly CRM Report](screenshots/weekly-crm-report.png)
+Data Management
+
+The project uses n8n Data Tables to store and manage CRM information.
+
+Leads Table
+
+Stores lead information, including:
+
+Full Name
+
+Email
+
+Phone
+
+Company
+
+Source
+
+Lead Score
+
+Priority
+
+Assigned Team Member
+
+Lead Status
+
+Follow-up Date
+
+FollowUp History Table
+
+Stores follow-up notification records to prevent duplicate reminders.
+
+The history records are used to determine whether a reminder has already been sent for a specific lead on a particular date.
 
 Technologies Used
 
 n8n – Workflow automation
 
-JavaScript – Data processing and business logic
+JavaScript – Data validation, calculations, and business logic
 
-Data Tables – Data storage and management
+n8n Data Tables – Data storage and management
 
-SMTP / Email – Automated notifications
+SMTP / Email – Automated notifications and reporting
 
 GitHub – Version control and project documentation
 
 Project Structure
 
-crm-automation-system/ │ ├── workflows/ │ ├── 01-lead-registration.json │ ├── 02-lead-status-management.json │ ├── 03-lead-follow-up-reporting.json │ └── 04-error-notifications.json │ ├── screenshots/ │ └── README.md 
-
-Setup & Usage
-
-Install and run n8n.
-
-Import the workflow JSON files into n8n.
-
-Configure the required Data Tables.
-
-Set up your own SMTP credentials.
-
-Review and configure workflow connections and references.
-
-Activate the workflows and test the forms and automation processes.
-
-Note: Credentials, Data Table references, and other environment-specific settings must be configured after importing the workflows.
-
-Key Features
-
-Automated lead registration and validation
-
-Duplicate lead detection
-
-Lead scoring and priority assignment
-
-Sales representative assignment
-
-Lead status tracking
-
-Automated follow-up reminders
-
-Weekly performance reporting
-
-Centralized error notifications
-
-Purpose
-
-This project was developed as part of a practical low-code automation portfolio to demonstrate workflow design, business process automation, data handling, and error management using n8n.
-
-Author: Hoseinitu
-
-Project: CRM Automation System
-
-Platform: n8n
+crm-automation-system/ │ ├── workflows/ │ ├── 01-lead-registration.json │ ├── 02-lead-status-management.json │ ├── 03-lead-follow-up-reporting.json │ └── 04-error-notifications.json │ ├── screenshots/ │ ├── 01-lead-registration.png │ ├── 02-lead-status-management.png │ ├── 03-lead-follow-up-reporting.png │ ├── 04-error-notifications.png │ └──
