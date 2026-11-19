@@ -1,0 +1,447 @@
+{
+  "name": "03 - Lead Follow-Up & Reporting",
+  "nodes": [
+    {
+      "parameters": {
+        "fromEmail": "your-email@example.com",
+        "toEmail": "your-email@example.com",
+        "subject": "CRM - Lead Follow-Up Reminder",
+        "emailFormat": "text",
+        "text": "=Lead Name:{{ $('Get All Leads').item.json.fullName }}\n\nEmail:{{ $('Get All Leads').item.json.email}}\n\nCompany:{{ $('Get All Leads').item.json.company }}\n\nPriority:{{ $('Get All Leads').item.json.priority }}\n\nAssigned To:{{ $('Get All Leads').item.json.assignedTo }}\n\nFollow-Up Date:{{ $('Get All Leads').item.json.followUpDate }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        1056,
+        -16
+      ],
+      "id": "",
+      "name": "Send Follow-Up Reminder",
+      "webhookId": "",
+      "credentials": {
+        "smtp": {
+          "id": "",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "",
+      "name": "Daily Follow-Up Schedule"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "nTxHtnVSOERfzLJM",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "/projects/qZFL44Xa3P7jrN3O/datatables/nTxHtnVSOERfzLJM"
+        },
+        "filters": {
+          "conditions": []
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "",
+      "name": "Get All Leads"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "",
+              "leftValue": "={{ $json.followUpDate }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            },
+            {
+              "id": "",
+              "leftValue": "={{ $json.followUpDate }}",
+              "rightValue": "={{ $now }}",
+              "operator": {
+                "type": "dateTime",
+                "operation": "beforeOrEquals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        448,
+        0
+      ],
+      "id": "",
+      "name": "Check Follow-up Due"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "oz0Qx4MrzvCp257Q",
+          "mode": "list",
+          "cachedResultName": "FollowUp History",
+          "cachedResultUrl": "/projects/qZFL44Xa3P7jrN3O/datatables/oz0Qx4MrzvCp257Q"
+        },
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "leadEmail",
+              "keyValue": "={{ $json.email }}"
+            },
+            {
+              "keyName": "reminderDate",
+              "keyValue": "={{ $now.toISODate() }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        640,
+        -112
+      ],
+      "id": "",
+      "name": "Check Follow-up History",
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 4
+          },
+          "conditions": [
+            {
+              "id": "",
+              "leftValue": "={{ $('Check Follow-up History').item.json.leadEmail }}",
+              "rightValue": "",
+              "operator": {
+                "type": "string",
+                "operation": "notEmpty",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.4,
+      "position": [
+        832,
+        -112
+      ],
+      "id": "",
+      "name": "Check Reminder Sent"
+    },
+    {
+      "parameters": {
+        "dataTableId": {
+          "__rl": true,
+          "value": "oz0Qx4MrzvCp257Q",
+          "mode": "list",
+          "cachedResultName": "FollowUp History",
+          "cachedResultUrl": "/projects/qZFL44Xa3P7jrN3O/datatables/oz0Qx4MrzvCp257Q"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "leadEmail": "={{ $('Get All Leads').item.json.email }}",
+            "reminderDate": "={{ $now.toISODate() }}",
+            "sentAt": "={{ $now }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "leadEmail",
+              "displayName": "leadEmail",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "reminderDate",
+              "displayName": "reminderDate",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            },
+            {
+              "id": "sentAt",
+              "displayName": "sentAt",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "dateTime",
+              "readOnly": false,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        1280,
+        -16
+      ],
+      "id": "",
+      "name": "Save Follow-Up History"
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "triggerAtDay": [
+                1
+              ],
+              "triggerAtHour": 9
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        160
+      ],
+      "id": "",
+      "name": "Weekly Report Schedule"
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "dataTableId": {
+          "__rl": true,
+          "value": "nTxHtnVSOERfzLJM",
+          "mode": "list",
+          "cachedResultName": "Leads",
+          "cachedResultUrl": "/projects/qZFL44Xa3P7jrN3O/datatables/nTxHtnVSOERfzLJM"
+        },
+        "matchType": "allConditions"
+      },
+      "type": "n8n-nodes-base.dataTable",
+      "typeVersion": 1.1,
+      "position": [
+        224,
+        160
+      ],
+      "id": "",
+      "name": "Get Leads For Report"
+    },
+    {
+      "parameters": {
+        "jsCode": "const leads = $input.all();\n\nconst totalLeads = leads.length;\n\nlet highPriority = 0;\nlet mediumPriority = 0;\nlet lowPriority = 0;\n\nlet newLeads = 0;\nlet contactedLeads = 0;\nlet interestedLeads = 0;\nlet notInterestedLeads = 0;\nlet convertedLeads = 0;\n\nfor (const lead of leads) {\n\n  if (lead.json.priority === 'High Priority') {\n    highPriority++;\n  } else if (lead.json.priority === 'Medium Priority') {\n    mediumPriority++;\n  } else if (lead.json.priority === 'Low Priority') {\n    lowPriority++;\n  }\n\n  if (lead.json.status === 'New') {\n    newLeads++;\n  } else if (lead.json.status === 'Contacted') {\n    contactedLeads++;\n  } else if (lead.json.status === 'Interested') {\n    interestedLeads++;\n  } else if (lead.json.status === 'Not Interested') {\n    notInterestedLeads++;\n  } else if (lead.json.status === 'Converted') {\n    convertedLeads++;\n  }\n}\n\nreturn {\n  json: {\n    totalLeads,\n    highPriority,\n    mediumPriority,\n    lowPriority,\n    newLeads,\n    contactedLeads,\n    interestedLeads,\n    notInterestedLeads,\n    convertedLeads\n  }\n};"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        464,
+        160
+      ],
+      "id": "",
+      "name": "Calculate CRM Statistics"
+    },
+    {
+      "parameters": {
+        "fromEmail": "your-email@example.com",
+        "toEmail": "your-email@example.com",
+        "subject": "Weekly CRM Performance Report",
+        "emailFormat": "text",
+        "text": "=WEEKLY CRM PERFORMANCE REPORT\n================================\n\nGENERAL STATISTICS\n\nTotal Leads: {{ $json.totalLeads }}\n\nPRIORITY BREAKDOWN\n\nHigh Priority: {{ $json.highPriority }}\nMedium Priority: {{ $json.mediumPriority }}\nLow Priority: {{ $json.lowPriority }}\n\nLEAD STATUS BREAKDOWN\n\nNew: {{ $json.newLeads }}\nContacted: {{ $json.contactedLeads }}\nInterested: {{ $json.interestedLeads }}\nNot Interested: {{ $json.notInterestedLeads }}\nConverted: {{ $json.convertedLeads }}\n\n================================\nThis report was automatically generated by CRM Automation.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        688,
+        160
+      ],
+      "id": "",
+      "name": "Send Weekly CRM Report",
+      "webhookId": "",
+      "credentials": {
+        "smtp": {
+          "id": "",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Daily Follow-Up Schedule": {
+      "main": [
+        [
+          {
+            "node": "Get All Leads",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get All Leads": {
+      "main": [
+        [
+          {
+            "node": "Check Follow-up Due",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Follow-up Due": {
+      "main": [
+        [
+          {
+            "node": "Check Follow-up History",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Follow-up History": {
+      "main": [
+        [
+          {
+            "node": "Check Reminder Sent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Check Reminder Sent": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Send Follow-Up Reminder",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Follow-Up Reminder": {
+      "main": [
+        [
+          {
+            "node": "Save Follow-Up History",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Weekly Report Schedule": {
+      "main": [
+        [
+          {
+            "node": "Get Leads For Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Leads For Report": {
+      "main": [
+        [
+          {
+            "node": "Calculate CRM Statistics",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate CRM Statistics": {
+      "main": [
+        [
+          {
+            "node": "Send Weekly CRM Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "timeSavedMode": "fixed",
+    "errorWorkflow": "bHA1SztJUGy2Ja3A",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": ""
+  },
+  "nodeGroups": [],
+  "id": "",
+  "tags": []
+}

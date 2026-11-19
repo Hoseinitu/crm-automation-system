@@ -1,0 +1,68 @@
+{
+  "name": "04 - CRM Error Notification",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.errorTrigger",
+      "typeVersion": 1,
+      "position": [
+        0,
+        0
+      ],
+      "id": "",
+      "name": "Capture Workflow Errors"
+    },
+    {
+      "parameters": {
+        "fromEmail": "your-email@example.com",
+        "toEmail": "your-email@example.com",
+        "subject": "CRM ALERT - Workflow Execution Failed",
+        "emailFormat": "text",
+        "text": "=CRM WORKFLOW ERROR ALERT\n\nA workflow execution has failed.\n\nWorkflow Name: {{ $json.workflow.name }}\n\nWorkflow ID: {{ $json.workflow.id }}\n\nExecution ID: {{ $json.execution.id }}\n\nFailed Node: {{ $json.execution.lastNodeExecuted }}\n\nError Message: {{ $json.execution.error.message }}\n\nExecution URL: {{ $json.execution.url }}\n\nPlease check the failed execution and resolve the issue.\n\nThis is an automated notification from CRM Error Notifications.",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        224,
+        0
+      ],
+      "id": "",
+      "name": "Send an Email",
+      "webhookId": "",
+      "credentials": {
+        "smtp": {
+          "id": "",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Capture Workflow Errors": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": ""
+  },
+  "nodeGroups": [],
+  "id": "",
+  "tags": []
+}
