@@ -154,21 +154,52 @@ Company
 
 Source
 
-Lead Score
+Score
 
 Priority
 
-Assigned Team Member
+AssignedTo
 
-Lead Status
+Status
 
-Follow-up Date
+FollowUpDate
 
 FollowUp History Table
+
+FollowUp History Table
+
+Stores records of sent follow-up reminders to prevent duplicate notifications.
+
+Fields:
+
+- "leadEmail" – Identifies the lead.
+- "reminderDate" – Stores the reminder date.
+- "sentAt" – Records when the reminder email was sent.
+
+The workflow checks this table before sending a reminder to avoid sending multiple notifications for the same lead on the same date.
 
 Stores follow-up notification records to prevent duplicate reminders.
 
 The history records are used to determine whether a reminder has already been sent for a specific lead on a particular date.
+
+Duplicate email addresses are detected before registration to prevent duplicate lead records.
+
+## Workflow Screenshots
+
+### 1. Lead Registration
+![Lead Registration](screenshots/01-lead-registration.png)
+
+### 2. Lead Status Management
+![Lead Status Management](screenshots/02-lead-status-management.png)
+
+### 3. Lead Follow-up & Reporting
+![Lead Follow-up](screenshots/03-lead-follow-up-reporting.png)
+
+### 4. CRM Error Notifications
+![Error Notifications](screenshots/04-error-notifications.png)
+
+### 5. Weekly CRM Report
+![Weekly CRM Report](screenshots/weekly-crm-report.png)
 
 Technologies Used
 
@@ -184,4 +215,48 @@ GitHub – Version control and project documentation
 
 Project Structure
 
-crm-automation-system/ │ ├── workflows/ │ ├── 01-lead-registration.json │ ├── 02-lead-status-management.json │ ├── 03-lead-follow-up-reporting.json │ └── 04-error-notifications.json │ ├── screenshots/ │ ├── 01-lead-registration.png │ ├── 02-lead-status-management.png │ ├── 03-lead-follow-up-reporting.png │ ├── 04-error-notifications.png │ └──
+crm-automation-system/ │ ├── workflows/ │ ├── 01-lead-registration.json │ ├── 02-lead-status-management.json │ ├── 03-lead-follow-up-reporting.json │ └── 04-error-notifications.json │ ├── screenshots/ │ ├── 01-lead-registration.png │ ├── 02-lead-status-management.png │ ├── 03-lead-follow-up-reporting.png │ ├── 04-error-notifications.png │ └──weekly-crm-report.png │ └── README.md 
+
+Setup & Usage
+
+Import the workflow JSON files into your n8n instance.
+
+Configure the required Data Tables.
+
+Set up your email credentials and SMTP configuration.
+
+Review form fields, email recipients, and workflow settings.
+
+Configure the error workflow for the main CRM workflows.
+
+Activate the workflows that use scheduled triggers.
+
+Test each workflow with sample lead data.
+
+Note: Email credentials, Data Tables, and other environment-specific settings must be configured in your own n8n instance.
+
+Key Concepts Demonstrated
+
+Workflow automation and orchestration
+
+Conditional branching using IF and Switch nodes
+
+Data validation and duplicate detection
+
+JavaScript-based business logic
+
+Automated lead scoring and assignment
+
+Scheduled tasks and reporting
+
+Data persistence and history tracking
+
+Centralized error handling
+
+Email-based business notifications
+
+Project Purpose
+
+The goal of this project was to build a practical CRM automation system that reduces repetitive manual tasks, improves lead management, and provides better visibility into customer follow-up activities.
+
+Author: Hoseinitu
